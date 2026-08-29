@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>麺 Earth // 統一利用規約</title>
+<style>
+    :root {
+        --neon-cyan: #00fff2;
+        --neon-magenta: #ff2ee6;
+        --neon-green: #39ff88;
+        --neon-orange: #ff9d00;
+        --neon-red: #ff2b52;
+        --bg-void: #05060a;
+        --bg-panel: rgba(15, 20, 32, 0.7);
+        --border-line: rgba(0, 255, 242, 0.25);
+        --text-main: #d7e6ff;
+        --text-dim: #7c8aa8;
+        --font-display: 'Orbitron', 'Segoe UI', sans-serif;
+        --font-body: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: var(--font-body);
+        background: var(--bg-void);
+        color: var(--text-main);
+        line-height: 1.85;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-image:
+            linear-gradient(rgba(0,255,242,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,242,0.06) 1px, transparent 1px);
+        background-size: 48px 48px;
+        animation: gridDrift 30s linear infinite;
+        mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, black 40%, transparent 100%);
+    }
+
+    @keyframes gridDrift {
+        0% { background-position: 0 0; }
+        100% { background-position: 48px 96px; }
+    }
+
+    .bg-glow {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+            radial-gradient(600px circle at 15% 10%, rgba(255,46,230,0.12), transparent 60%),
+            radial-gradient(700px circle at 85% 25%, rgba(0,255,242,0.10), transparent 60%),
+            radial-gradient(500px circle at 50% 90%, rgba(57,255,136,0.08), transparent 60%);
+        pointer-events: none;
+    }
+
+    .scanline {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.015) 0px,
+            rgba(255,255,255,0.015) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+        opacity: 0.5;
+    }
+
+    .scan-beam {
+        position: fixed;
+        left: 0; right: 0;
+        height: 120px;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(to bottom, transparent, rgba(0,255,242,0.06), transparent);
+        animation: beamSweep 8s ease-in-out infinite;
+    }
+
+    @keyframes beamSweep {
+        0%, 100% { top: -120px; opacity: 0; }
+        10% { opacity: 1; }
+        50% { top: 100vh; opacity: 1; }
+        60% { opacity: 0; }
+    }
+
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        text-align: center;
+        padding: 60px 20px 50px;
+        position: relative;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        letter-spacing: 0.35em;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        opacity: 0;
+        animation: fadeSlideUp 0.8s ease forwards 0.1s;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+        content: '';
+        width: 30px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--neon-cyan));
+    }
+    .eyebrow::after { background: linear-gradient(90deg, var(--neon-cyan), transparent); }
+
+    .pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--neon-green);
+        box-shadow: 0 0 8px var(--neon-green);
+        animation: pulseDot 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    h1 {
+        font-family: var(--font-display), var(--font-body);
+        font-size: clamp(2.2rem, 6vw, 3.6rem);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        background: linear-gradient(120deg, var(--neon-cyan) 0%, #fff 40%, var(--neon-magenta) 80%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: fadeSlideUp 0.8s ease forwards 0.25s, shimmer 6s linear infinite 1s;
+        opacity: 0;
+        position: relative;
+    }
+
+    h1::after {
+        content: '麺 EARTH';
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        color: var(--neon-magenta);
+        opacity: 0;
+        -webkit-text-fill-color: var(--neon-magenta);
+        mix-blend-mode: screen;
+        animation: glitchFlicker 7s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    @keyframes glitchFlicker {
+        0%, 96%, 100% { opacity: 0; transform: translate(0); }
+        96.5% { opacity: 0.7; transform: translate(-3px, 1px); }
+        97% { opacity: 0; }
+        97.5% { opacity: 0.5; transform: translate(3px, -1px); }
+        98% { opacity: 0; }
+    }
+
+    @keyframes shimmer {
+        0% { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
+
+    .subtitle {
+        color: var(--text-dim);
+        font-size: 1.05rem;
+        letter-spacing: 0.15em;
+        margin-top: 14px;
+        opacity: 0;
+        animation: fadeSlideUp 0.8s ease forwards 0.4s;
+    }
+
+    .subtitle .accent { color: var(--neon-cyan); }
+
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        opacity: 0;
+        animation: fadeSlideUp 0.8s ease forwards 0.55s;
+    }
+
+    .search-wrap {
+        flex: 1;
+        min-width: 220px;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 16px;
+        width: 16px;
+        height: 16px;
+        color: var(--neon-cyan);
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 14px 16px 14px 44px;
+        background: var(--bg-panel);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border-line);
+        border-radius: 8px;
+        color: var(--text-main);
+        font-size: 0.95rem;
+        font-family: var(--font-body);
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .search-box::placeholder { color: var(--text-dim); }
+
+    .search-box:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 0 3px rgba(0,255,242,0.12), 0 0 24px rgba(0,255,242,0.15);
+    }
+
+    .search-status {
+        font-size: 0.78rem;
+        color: var(--neon-green);
+        margin: 8px 0 26px;
+        min-height: 16px;
+        letter-spacing: 0.03em;
+        padding-left: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .search-status.none { color: var(--neon-red); }
+
+    button {
+        padding: 14px 22px;
+        background: transparent;
+        color: var(--neon-cyan);
+        border: 1px solid var(--border-line);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.88rem;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+    }
+
+    button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(0,255,242,0.25), transparent);
+        transform: translateX(-120%);
+        transition: transform 0.5s ease;
+    }
+
+    button:hover {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 18px rgba(0,255,242,0.25);
+        color: #fff;
+    }
+
+    button:hover::before { transform: translateX(120%); }
+    button:active { transform: scale(0.96); }
+
+    .btn-group { display: flex; gap: 10px; }
+
+    .table-of-contents {
+        background: var(--bg-panel);
+        backdrop-filter: blur(12px);
+        padding: 24px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 1px solid var(--border-line);
+        position: relative;
+        opacity: 0;
+        animation: fadeSlideUp 0.8s ease forwards 0.7s;
+    }
+
+    .table-of-contents::before {
+        content: '';
+        position: absolute;
+        top: -1px; left: 20px; right: 20px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+    }
+
+    .table-of-contents h2 {
+        font-family: var(--font-display), var(--font-body);
+        font-size: 1rem;
+        letter-spacing: 0.15em;
+        margin-bottom: 16px;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .toc-list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 4px;
+    }
+
+    .toc-list li { border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    .toc-list a {
+        color: var(--text-dim);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 6px;
+        font-size: 0.9rem;
+        transition: color 0.2s ease, padding-left 0.2s ease;
+        border-radius: 4px;
+    }
+
+    .toc-list a .num {
+        color: var(--neon-cyan);
+        font-family: var(--font-display), var(--font-body);
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
+
+    .toc-list a:hover {
+        color: #fff;
+        padding-left: 12px;
+        background: rgba(0,255,242,0.05);
+    }
+
+    .chapters { display: flex; flex-direction: column; gap: 16px; }
+
+    .chapter {
+        background: var(--bg-panel);
+        backdrop-filter: blur(12px);
+        border-radius: 10px;
+        border: 1px solid var(--border-line);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: chapterIn 0.6s ease forwards;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        scroll-margin-top: 20px;
+    }
+
+    .chapter:hover { border-color: rgba(0,255,242,0.45); }
+
+    @keyframes chapterIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter.hidden { display: none; }
+
+    .chapter-header {
+        padding: 20px 22px;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        transition: background 0.25s ease;
+        position: relative;
+    }
+
+    .chapter-header:hover { background: rgba(0,255,242,0.04); }
+
+    .chapter-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .chapter-index {
+        font-family: var(--font-display), var(--font-body);
+        font-size: 0.75rem;
+        color: var(--bg-void);
+        background: var(--neon-cyan);
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 14px rgba(0,255,242,0.4);
+    }
+
+    .chapter-header h2 {
+        font-size: 1.05rem;
+        color: var(--text-main);
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .toggle-icon {
+        font-size: 1rem;
+        color: var(--neon-cyan);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
+    }
+
+    .chapter.collapsed .toggle-icon { transform: rotate(-90deg); }
+
+    .chapter-content {
+        display: grid;
+        grid-template-rows: 1fr;
+        transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .chapter.collapsed .chapter-content { grid-template-rows: 0fr; }
+
+    .chapter-content-inner {
+        overflow: hidden;
+        padding: 18px 22px 22px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .chapter.collapsed .chapter-content-inner { padding-top: 0; padding-bottom: 0; border-top-color: transparent; }
+
+    .section { margin-bottom: 22px; }
+    .section:last-child { margin-bottom: 0; }
+
+    .section h3 {
+        color: var(--neon-cyan);
+        font-size: 0.98rem;
+        margin-bottom: 10px;
+        margin-top: 4px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section h3::before {
+        content: '';
+        width: 3px;
+        height: 14px;
+        background: var(--neon-cyan);
+        box-shadow: 0 0 6px var(--neon-cyan);
+        border-radius: 2px;
+    }
+
+    .section-content { color: var(--text-dim); line-height: 1.85; font-size: 0.95rem; }
+
+    .subsection {
+        margin-left: 8px;
+        margin-bottom: 13px;
+        padding-left: 14px;
+        border-left: 2px solid rgba(0,255,242,0.25);
+        transition: border-color 0.2s ease;
+    }
+
+    .subsection:hover { border-left-color: var(--neon-cyan); }
+    .subsection strong { color: var(--text-main); }
+
+    .warning-box, .danger-box {
+        padding: 16px 18px;
+        margin: 0 0 18px;
+        border-radius: 8px;
+        font-size: 0.92rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .warning-box {
+        background: rgba(255, 157, 0, 0.08);
+        border: 1px solid rgba(255, 157, 0, 0.35);
+        color: #ffcf8a;
+    }
+
+    .danger-box {
+        background: rgba(255, 43, 82, 0.08);
+        border: 1px solid rgba(255, 43, 82, 0.4);
+        color: #ff9caa;
+        animation: dangerPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes dangerPulse {
+        0%, 100% { box-shadow: 0 0 0px rgba(255,43,82,0); }
+        50% { box-shadow: 0 0 22px rgba(255,43,82,0.18); }
+    }
+
+    mark.hit {
+        background: rgba(0, 255, 242, 0.25);
+        color: #fff;
+        padding: 1px 3px;
+        border-radius: 3px;
+        box-shadow: 0 0 8px rgba(0,255,242,0.4);
+    }
+
+    footer {
+        text-align: center;
+        padding: 50px 20px 30px;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+    }
+
+    footer .line {
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        margin: 0 auto 20px;
+    }
+
+    footer p { margin-bottom: 6px; }
+
+    .to-top {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: var(--bg-panel);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        font-size: 1.1rem;
+    }
+
+    .to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .to-top:hover { box-shadow: 0 0 20px rgba(0,255,242,0.4); }
+
+    @media (max-width: 600px) {
+        h1 { font-size: 1.9rem; }
+        .controls { flex-direction: column; align-items: stretch; }
+        .btn-group { flex-direction: column; }
+        .chapter-header h2 { font-size: 0.92rem; }
+        .toc-list { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="scanline"></div>
+    <div class="scan-beam"></div>
+
+    <div class="container">
+        <header>
+            <div class="eyebrow"><span class="pulse-dot"></span> SYSTEM // TERMS OF SERVICE ONLINE</div>
+            <h1 id="mainTitle">麺 EARTH</h1>
+            <div class="subtitle">統一利用規約 <span class="accent">// UNIFIED TERMS PROTOCOL</span></div>
+        </header>
+
+        <div class="controls">
+            <div class="search-wrap">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-box" id="searchBox" placeholder="規約データベースを検索... (例: PK, BAN, TNT)" autocomplete="off">
+            </div>
+            <div class="btn-group">
+                <button id="expandBtn" type="button">すべて展開</button>
+                <button id="collapseBtn" type="button">すべて折畳</button>
+            </div>
+        </div>
+        <div class="search-status" id="searchStatus"></div>
+
+        <div class="table-of-contents">
+            <h2>◈ INDEX</h2>
+            <ul class="toc-list" id="tocList"></ul>
+        </div>
+
+        <div class="chapters" id="chaptersContainer"></div>
+
+        <footer>
+            <div class="line"></div>
+            <p>麺 EARTH 統一利用規約 — UNIFIED TERMS OF SERVICE</p>
+            <p>このページは参考用です。最新の規約は公式Discordを確認してください。</p>
+            <p style="margin-top:16px; opacity:0.6;">LAST SYNC: 2026.08</p>
+        </footer>
+    </div>
+
+    <div class="to-top" id="toTop" title="トップへ戻る">↑</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const chapters = [
+        {
+            id: "chapter1",
+            title: "第1章 総則",
+            sections: [
+                { h: "第1条 目的および本規約の適用", body: [
+                    "1. 本規約は、Minecraft サーバー「麺Earth」（以下「本サーバー」）および本サーバー内で提供する一切のサービス（以下「本サービス」）の利用条件を定めるものです。",
+                    "2. 本規約は、本サーバーの秩序維持、安全確保、および全ユーザー間の公平性を確保することを目的とします。",
+                    "3. ユーザーは、本サーバー（Minecraft）に接続し、または公式 Discord、LINE オープンチャット、ウェブサイト等の関連コミュニティに参加した時点で、本規約の全条項に同意したものとみなします。"
+                ]},
+                { h: "第2条 規約の構成・改定", body: [
+                    "1. 本規約は章立てで構成され、運営が必要と判断した場合、ユーザーの個別の同意を得ることなく、いつでも内容の変更、追加、廃止を行うことができます。",
+                    "2. 規約の改定は、サーバー内、Discord、または公式コミュニティ上での告知をもって効力を生じます。変更後は、告知時に定める時点から適用され、改定後に本サービスを利用したユーザーは、変更後の規約に同意したものとみなされます。"
+                ]},
+                { h: "第3条 用語の定義", body: [
+                    "「管理権限者」：サーバーの所有者および運営スタッフ。秩序維持のための最終的な判断が権限を有します。",
+                    "「ユーザー」：本サービスにアクセスするすべての個人。",
+                    "「警告」：違反行為に対する公式な注意喚起。記録として保持されます。",
+                    "「ミュート」：チャット発言やコマンド使用を一定期間制限する措置。",
+                    "「期限 BAN」：定められた期間（7日、30日、90日等）、接続を禁止する措置。",
+                    "「永久 BAN」：期間の定めなく、将来にわたって一切の接続を禁止する措置。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter2",
+            title: "第2章 コミュニティ規範と発言",
+            sections: [
+                { h: "第1条 外部サービスへの適用範囲", body: [
+                    "本規約は、各プラットフォームの利用規約その他のルールと併用し適用されます。各サイトの利用規約とサーバーの利用規約が抵触する場合、そのサイトの方が優先されます。"
+                ]},
+                { h: "第2条 管理権限者の指示遵守", body: [
+                    "ユーザーは、ゲーム内外を問わず、管理権限者の指示、裁定、誘導に従わなければなりません。これに反抗し、運営業務を妨害する行為は処分の対象となります。"
+                ]},
+                { h: "第3条 禁止される発言・コンテンツ", body: [
+                    "以下の行為を、チャット、看板、本・羽ペン、Discord、LINE オープンチャット等のあらゆる媒体で禁止します。",
+                    "1. 不適切な表現：挑発、暴言、差別的発言（人種、性別、機種、特定の利用者への過度な差別等）、過度な下ネタ（R18表現）、公序良俗に反する内容。また、Discord内で中指スタンプその他不適切だと思われるスタンプを禁止します",
+                    "2. スパム行為：意味のない文字列の連投、コマンドの乱用、特定の単語の繰り返しによるチャット欄の占拠。",
+                    "3. 有害コンテンツ：ウイルス、マルウェア、詐欺サイトへのリンク、ブラウザクラッシャー（GIF等を含む）の送信。",
+                    "4. 個人情報の保護：他人の本名、住所、電話番号、SNS アカウント、顔写真等の個人情報を、本人の同意の有無を問わず公開・拡散する行為。",
+                    "5. 政治・宗教：特定の宗教、政党、団体を過度に象徴するものの建築、または布教・扇動行為。"
+                ]},
+                { h: "第4条 個人間トラブルの原則", body: [
+                    "個人間の紛争、口論、いざこざは、原則として当事者間で解決するものとします。ただし、サーバーの安全確保や規約違反が認められる場合、運営は最小限の介入を行う権利を留保します。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter3",
+            title: "第3章 信用・需要の不当な毀損と扇動の禁止",
+            sections: [
+                { h: "第1条 解決済み事案の取扱い", body: [
+                    "「解決済み事案」とは、事実確認が行われ、運営による処置、謝罪、是正、または公式な告知が完了した事案を指します。これらの事案を、悪質な目的で蒸し返し、サーバー評価を低下させる目的で反復・継続的に取り上げる行為（再燃・再拡散）を禁止します。"
+                ]},
+                { h: "第2条 組織的扇動の禁止", body: [
+                    "1. 他者を動員したタグ運動、外部サーバーや SNS、掲示板等での呼び込み、同趣旨の反復投稿により、本サーバーの秩序を乱し、炎上や不買（利用停止）を誘導する行為を禁止します。",
+                    "2. 企画立案者だけでなく、実行者や執拗な参加者も共犯的関与として判断された場合処分の対象となります。"
+                ]},
+                { h: "第3条 ネガティブキャンペーン", body: [
+                    "虚偽の事実の摘示、断定的誇張、恣意的なスクリーンショットの切り取り、誤解を誘う編集動画の公開、レビュー荒らし等により、本サービスの信用や需要を不当に害する行為を禁止します。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter4",
+            title: "第4章 ゲーム内行為および Earth 固有ルール",
+            warning: "このセクションはサーバーの秩序を保つための重要なルールです。違反には厳しい処罰が課されます。",
+            sections: [
+                { h: "第1条 大規模地形改変の制限", body: [
+                    "環境保護と景観維持のため、以下の基準を設けます。",
+                    "禁止例：広範囲の露天掘り、幅 20m（20ブロック）以上の領域（湖・川・海・陸）の埋立。",
+                    "許容例：戦艦・客船の建造、通路の架橋、石油コンビナート等の海上インフラ、元の海岸線から 40m 以内の護岸工事。",
+                    "処分：違法建築の撤去および原状回復を命じます。従わない場合は運営により強制削除および BAN を行います。"
+                ]},
+                { h: "第2条 サーバー負荷行為", body: [
+                    "1. 故意にチャンク読み込みを急増させる行為、無意味な大量パケット送信、過剰なクロック回路・ホッパー・レッドストーン装置の設置を禁止します。",
+                    "2. 意図せず高負荷が発生している場合、運営の改善要請に従い、装置の停止または撤去を行わなければなりません。",
+                    "3. 特定のチャンクを読み込ませる（チャンクローダー的なもの）を使用を禁止します。",
+                    "4. 大量の TNT を連続して投下する装置、飛行しながら TNT 等を散布する装置（爆撃機）、その他運営がこれに類すると判断する兵器の使用・建造を禁止します。"
+                ]},
+                { h: "第3条 バグ・不正利用の禁止", body: [
+                    "バグ・グリッチ：ゲームの不具合や仕様外の挙動（アイテム複製/デュープ、TNT 複製、0-tick 等）を利用して利益を得る行為を禁止します。発見時は速やかに運営へ報告する義務があります。",
+                    "チート・改造：不正改造クライアント（Horion 等）、透過テクスチャ（X-ray）、HP 表示、マップ表示、ヒットボックス表示、Freecam 等の、バニラ環境で得られない情報を取得する手段を一切禁止します。"
+                ]},
+                { h: "第4条 自動化・マクロ・放置", body: [
+                    "1. 全鯖共通禁止：外部ツール、マクロ、オートクリック、AI BOT、入力を固定する重り等による自動化を禁止します。",
+                    "2. 資源 1/2 鯖の特例：放置（AFK）自体は許可されます。ただし、AFK キック（自動切断）を回避するための機構（自動移動、定期入力等）全般を禁止します。",
+                    "3. 許可される装置：サトウキビ自動収穫機、玄武岩生成、自動釣り機（竿の操作は手動）、クラフターを用いた自動クラフト、丸石製造機、自動仕分け機。",
+                    "4. 資源サーバーがある場合、シード値を外部サイト等に入力し、バイオーム、地形、村、要塞その他の構造物等の位置を特定する行為を禁止します。"
+                ]},
+                { h: "第5条 荒らし・窃盗・土地利用", body: [
+                    "Earth 領土内：他国の建築物破壊、チェストからの窃盗、家畜（エンティティ）のキル、スポーン地点の封鎖を厳禁とします。",
+                    "隣接地の保護：他国領土の国境線からの境界から 3 チャンク以内において、嫌がらせと判断される建築や地形破壊を行ってはなりません。また、荒野においても他ユーザーの活動を妨げる目的での荒らしや破壊、マグマの設置などを行ったと見なされますと、規則違反となります。"
+                ]},
+                { h: "第6条 PK行為のルール", body: [
+                    "PK（Player Kill）とは、他のプレイヤーにキルを行うこと。",
+                    "1. プレイヤー間で同意がある場合、PK自体は許可されますが、以下の行為は禁止です：キルログを利用した過度な荒らし（ログが連続して大量に流れる等）／キルを同意を得ていないのにも関わらず同意を得たと偽る行為",
+                    "2. 短時間に大量のキルを行い、チャット欄をキルログで継続的に占拠するような過度なPKは、同意の有無にかかわらず処分の対象となります。"
+                ]},
+                { h: "第7条 土地に関するルール", body: [
+                    "飛び地は認めますが以下の行為を禁止します。",
+                    "1. 他国または他プレイヤーの領土を囲む形で領土を取得する行為。また、不適切な領土の取り方（アウトポスト・他国の領土進行を不可能にする）",
+                    "2. 自国領土の周囲を囲み、その内部を新たに自国領として主張する行為。",
+                    "3. 違反時の処分：原則として以下の段階で適用されます：警告 → 一定期間BAN → 永久BAN",
+                    "4. ネザーやエリトラ、移動手段を問わず様々な方法で遠い場所へ行き、想定されていないフラットワールドの場所へ行き建築や領土設定、トラップなどを建設することを一切禁じます。",
+                    "6. 海岸から10チャンク以上離れた海域において、領土の取得、建築物の建設、トラップの設置、拠点化その他これらに類する行為を禁止します。発見次第、運営から撤去命令が下されます。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter5",
+            title: "第5章 アカウント管理とプライバシー",
+            sections: [
+                { h: "第1条 なりすましの禁止", body: [
+                    "他ユーザー、実在の有名人、または運営スタッフを詐称する行為を禁止します。また、アカウントの譲渡、売買、共有も一切認められません。"
+                ]},
+                { h: "第2条 データ保持", body: [
+                    "運営は、処罰記録、チャットログ、行動ログを、サービスの安全運営に必要な期間保持します。ユーザーは、本人確認が可能な範囲で、自己のデータの開示・訂正を求めることができます。"
+                ]},
+                { h: "第3条 複数のアカウントの利用", body: [
+                    "1. Discordの複数アカウントの所有を認めますが、なりすまし・処罰回避・別人を装う行為を禁じます。",
+                    "2. 麺Earthのサーバー参加において、運営に了承なくサブアカウントを利用する事を禁じます。もし利用する場合は、利用開始前にDiscordでTicketを切り報告してください。",
+                    "3. 外出先や、データ損失、アカウントを使用出来なくなった、等の運営に認められる特別な事情のある場合は事前に速やかに連絡等すること。",
+                    "4. サブアカウントを使う公平性を損なう行為（投票・チャンク読み込み・処罰回避等)を一律禁止にします。",
+                    "5. また、Discord・LINE・Minecraftでの違反が見つかった場合、全てのアカウントを処罰する恐れがあります。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter6",
+            title: "第6章 包括的禁止事項と即時永久 BAN",
+            danger: "以下の項目に該当する行為は、事前の警告なく即時永久 BAN となる重大違反とみなします。",
+            sections: [
+                { h: null, body: [
+                    "1. チートツールの使用：PvP 改造、透過系ツール、ハッククライアント。",
+                    "2. ネットワーク攻撃：DoS/DDoS 攻撃、サーバー脆弱性の悪用。",
+                    "3. 認証回避：BAN 等不正な回避を目的とした別アカウント、VPN、プロキシの使用。",
+                    "4. アカウント窃用：他者のアカウントへの不正アクセス。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter7",
+            title: "第7章 処罰基準と異議申立",
+            sections: [
+                { h: "第1条 処罰の原則", body: [
+                    "1. 処罰は原則として「警告 → ミュート → タイム BAN → 永久 BAN」の順に段階的に適用されます。ただし、行為の悪質性、重大性、反復性、およびサーバーに与える影響度を鑑み、管理権限者の裁量により段階を飛ばして適用することができます。",
+                    "2. 処分内容（期間や範囲）の最終決定権は運営にあります。"
+                ]},
+                { h: "第2条 異議申立の手続き", body: [
+                    "申立時には、プレイヤー名、確認可能な場合はXUID等、処分の詳細、および主張を裏付ける証拠（未加工のスクリーンショットや動画）を提出する必要があります。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter8",
+            title: "第8章 サービス提供・免責事項",
+            sections: [
+                { h: "第1条 停止・中断", body: [
+                    "運営は、定期的にワールドのバックアップを行いますが、システム保守、アップデート、サーバー攻撃への対応、または天災等の不可抗力により、予告なくサービスの一部または全部を停止・中断することがあります。"
+                ]},
+                { h: "第2条 データの消失", body: [
+                    "不具合、攻撃、メンテナンス、負荷等により、データが消失、または特定時点まで巻き戻る（ロールバック）ことがあります。これに伴うユーザーの損失（アイテム、建築物、時間等）について、運営は特定の場合によるもの以外はの補償を行いません。"
+                ]},
+                { h: "第3条 知的財産権", body: [
+                    "1. サーバー内のテキスト、設定、プログラム、公式画像等の権利は運営に帰属します。",
+                    "2. ユーザーが作成した建築物、文章、画像その他のコンテンツについて、法令上認められる権利は、原則として当該ユーザーに帰属します。ただし、運営は、本サービスおよび麺Earthの広報、紹介、宣伝、イベント等を目的とする場合、当該コンテンツを無償で利用、撮影、複製、編集、掲載、公開および動画等に使用することができるものとします。この利用について、ユーザーは運営に対して対価その他の補償を請求しないものとします。"
+                ]},
+                { h: "第4条 無保証・責任制限", body: [
+                    "本サービスは「現状有姿」で提供され、その完全性、正確性、安全性についていかなる保証も行いません。ユーザー間での物品売買や契約は自己責任とし、運営は一切関与しません。"
+                ]}
+            ]
+        },
+        {
+            id: "chapter9",
+            title: "第9章 準拠法・裁判管轄",
+            sections: [
+                { h: null, body: [
+                    "本規約の解釈は日本法を準拠法とし、規約の解釈および裁定に関する最終的な決定権は運営に帰属します。"
+                ]}
+            ]
+        }
+    ];
+
+    const chaptersContainer = document.getElementById('chaptersContainer');
+    const tocList = document.getElementById('tocList');
+
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    chapters.forEach((ch, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="#' + ch.id + '"><span class="num">' + String(idx + 1).padStart(2, '0') + '</span>' + escapeHtml(ch.title) + '</a>';
+        tocList.appendChild(li);
+
+        const chapterEl = document.createElement('div');
+        chapterEl.className = 'chapter collapsed';
+        chapterEl.id = ch.id;
+        chapterEl.style.animationDelay = (0.05 * idx) + 's';
+
+        let innerHtml = '';
+        if (ch.warning) {
+            innerHtml += '<div class="warning-box">⚠️ <span>' + escapeHtml(ch.warning) + '</span></div>';
+        }
+        if (ch.danger) {
+            innerHtml += '<div class="danger-box">🚫 <span>' + escapeHtml(ch.danger) + '</span></div>';
+        }
+
+        ch.sections.forEach(sec => {
+            innerHtml += '<div class="section">';
+            if (sec.h) innerHtml += '<h3>' + escapeHtml(sec.h) + '</h3>';
+            innerHtml += '<div class="section-content">';
+            sec.body.forEach(line => {
+                innerHtml += '<div class="subsection">' + escapeHtml(line) + '</div>';
+            });
+            innerHtml += '</div></div>';
+        });
+
+        chapterEl.innerHTML =
+            '<div class="chapter-header" data-toggle>' +
+                '<div class="chapter-header-left">' +
+                    '<div class="chapter-index">' + String(idx + 1).padStart(2, '0') + '</div>' +
+                    '<h2>' + escapeHtml(ch.title) + '</h2>' +
+                '</div>' +
+                '<div class="toggle-icon">▶</div>' +
+            '</div>' +
+            '<div class="chapter-content">' +
+                '<div class="chapter-content-inner">' + innerHtml + '</div>' +
+            '</div>';
+
+        chaptersContainer.appendChild(chapterEl);
+    });
+
+    chaptersContainer.addEventListener('click', function (e) {
+        const header = e.target.closest('[data-toggle]');
+        if (!header) return;
+        const chapter = header.closest('.chapter');
+        chapter.classList.toggle('collapsed');
+    });
+
+    document.getElementById('expandBtn').addEventListener('click', function () {
+        document.querySelectorAll('.chapter').forEach(c => c.classList.remove('collapsed'));
+    });
+
+    document.getElementById('collapseBtn').addEventListener('click', function () {
+        document.querySelectorAll('.chapter').forEach(c => c.classList.add('collapsed'));
+    });
+
+    const searchBox = document.getElementById('searchBox');
+    const searchStatus = document.getElementById('searchStatus');
+    let debounceTimer = null;
+
+    function clearHighlights(root) {
+        root.querySelectorAll('mark.hit').forEach(m => {
+            const parent = m.parentNode;
+            parent.replaceChild(document.createTextNode(m.textContent), m);
+            parent.normalize();
+        });
+    }
+
+    function highlightText(root, term) {
+        clearHighlights(root);
+        if (!term) return;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+
+        const lowerTerm = term.toLowerCase();
+        nodes.forEach(node => {
+            const text = node.nodeValue;
+            const lowerText = text.toLowerCase();
+            if (!lowerText.includes(lowerTerm)) return;
+
+            const frag = document.createDocumentFragment();
+            let cursor = 0;
+            let idx;
+            while ((idx = lowerText.indexOf(lowerTerm, cursor)) !== -1) {
+                if (idx > cursor) frag.appendChild(document.createTextNode(text.slice(cursor, idx)));
+                const mark = document.createElement('mark');
+                mark.className = 'hit';
+                mark.textContent = text.slice(idx, idx + term.length);
+                frag.appendChild(mark);
+                cursor = idx + term.length;
+            }
+            if (cursor < text.length) frag.appendChild(document.createTextNode(text.slice(cursor)));
+            node.parentNode.replaceChild(frag, node);
+        });
+    }
+
+    function escapeRegExp(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function runSearch(rawTerm) {
+        const term = rawTerm.trim();
+        const chapterEls = document.querySelectorAll('.chapter');
+        let visibleCount = 0;
+        let hitCount = 0;
+
+        chapterEls.forEach(chapterEl => {
+            clearHighlights(chapterEl);
+
+            if (!term) {
+                chapterEl.classList.remove('hidden');
+                chapterEl.classList.add('collapsed');
+                visibleCount++;
+                return;
+            }
+
+            const text = chapterEl.textContent.toLowerCase();
+            const termLower = term.toLowerCase();
+            const matches = text.includes(termLower);
+
+            if (matches) {
+                chapterEl.classList.remove('hidden');
+                chapterEl.classList.remove('collapsed');
+                highlightText(chapterEl.querySelector('.chapter-content-inner'), term);
+                const re = new RegExp(escapeRegExp(termLower), 'g');
+                const count = (text.match(re) || []).length;
+                hitCount += count;
+                visibleCount++;
+            } else {
+                chapterEl.classList.add('hidden');
+            }
+        });
+
+        if (!term) {
+            searchStatus.textContent = '';
+            searchStatus.classList.remove('none');
+        } else if (visibleCount === 0) {
+            searchStatus.textContent = '⚠ 「' + term + '」に一致する条文が見つかりません';
+            searchStatus.classList.add('none');
+        } else {
+            searchStatus.textContent = '✓ 「' + term + '」に一致：' + visibleCount + '章 / 約' + hitCount + '箇所ヒット';
+            searchStatus.classList.remove('none');
+        }
+    }
+
+    searchBox.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const value = this.value;
+        debounceTimer = setTimeout(() => runSearch(value), 120);
+    });
+
+    document.querySelectorAll('.chapter').forEach(c => c.classList.add('collapsed'));
+
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 400) toTop.classList.add('visible');
+        else toTop.classList.remove('visible');
+    });
+    toTop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    tocList.addEventListener('click', function (e) {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+            requestAnimationFrame(() => target.classList.remove('collapsed'));
+        }
+    });
+})();
+</script>
+</body>
+</html>
